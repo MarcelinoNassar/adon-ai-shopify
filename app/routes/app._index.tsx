@@ -14,7 +14,18 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export default function Index() {
 
   return (
-    <div> hello </div>
+    <div style={{ minHeight: "90vh", display: "flex", justifyContent: "center", alignItems: "center", }}>
+      <div style={{ width: 900 }}>
+        <s-section>
+          <s-text-field label="Enter your API key" placeholder="API key"></s-text-field>
+          <s-stack inlineSize="100%">
+            <s-button variant="primary" inlineSize="fill">
+              Connect Store
+            </s-button>
+          </s-stack>
+        </s-section>
+      </div>
+    </div>
   );
 }
 

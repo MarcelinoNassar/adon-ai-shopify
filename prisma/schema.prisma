@@ -5,16 +5,14 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// Note that some adapters may set a maximum length for the String type by default, please ensure your strings are long
-// enough when changing adapters.
-// See https://www.prisma.io/docs/orm/reference/prisma-schema-reference#string for more information
 datasource db {
-  provider = "sqlite"
-  url      = "file:dev.sqlite"
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 model Session {
-  id            String    @id
+  session_id    String     @id @default(auto()) @map("_id") @db.ObjectId
+  id            String     @unique
   shop          String
   state         String
   isOnline      Boolean   @default(false)
@@ -31,4 +29,17 @@ model Session {
   emailVerified Boolean?  @default(false)
   refreshToken        String?
   refreshTokenExpires DateTime?
+}
+
+model Store {
+  id              String   @id @map("_id") @default(auto()) @db.ObjectId
+  name            String
+  shopDomain      String
+  backgroundColor String?
+  currencyCode    String?
+  language        String?
+  apiKey          String?
+  modelImageUrls  String[]
+
+  @@unique([name, shopDomain])
 }
