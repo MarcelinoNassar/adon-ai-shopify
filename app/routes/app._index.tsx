@@ -11,6 +11,7 @@ type ActionData =
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
+
   const store = await prisma.store.findUnique({
     where: { shopDomain: session.shop },
   });
@@ -20,37 +21,45 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { session } = await authenticate.admin(request);
+
   const formData = await request.formData();
   const apiKeyValue = formData.get("apiKey");
 
   if (typeof apiKeyValue !== "string") {
-    return Response.json({ error: "API key is required." } satisfies ActionData, {
-      status: 400,
-    });
+    return Response.json(
+      { error: "API key is required." } satisfies ActionData,
+      {
+        status: 400,
+      },
+    );
   }
 
   const apiKey = apiKeyValue.trim();
 
   if (!apiKey) {
-    return Response.json({ error: "API key is required." } satisfies ActionData, {
-      status: 400,
-    });
+    return Response.json(
+      { error: "API key is required." } satisfies ActionData,
+      {
+        status: 400,
+      },
+    );
   }
 
   const store = await prisma.store.findFirst({
-    where: { shopDomain: session.shop },
+    where: { apiKey },
   });
 
   if (!store) {
-    return Response.json({ error: "Store not found." } satisfies ActionData, {
-      status: 404,
-    });
+    return Response.json({ error: "Invalid API key." } satisfies ActionData,
+      { status: 401 },
+    );
   }
 
-  if (store.apiKey !== apiKey) {
-    return Response.json({ error: "Invalid API key." } satisfies ActionData, {
-      status: 401,
-    });
+  if (!session.shop) {
+    return Response.json(
+      { error: "No shop domain found for this session." } satisfies ActionData,
+      { status: 400 },
+    );
   }
 
   if (!session.accessToken) {
@@ -62,27 +71,32 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   await prisma.store.update({
     where: { id: store.id },
-    data: { accessToken: session.accessToken, connected: true },
+    data: {
+      shopDomain: session.shop,
+      accessToken: session.accessToken,
+      connected: true,
+    },
   });
 
   return Response.json({ success: true } satisfies ActionData);
 };
 
 export default function Index() {
-  const actionData = useActionData<ActionData>();
   const { connected } = useLoaderData<typeof loader>();
+  const actionData = useActionData<ActionData>();
+
   const isConnected = connected || actionData?.success === true;
 
   return (
     <div style={{ minHeight: "90vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
       <div style={{ width: 900 }}>
-        
+
         {isConnected ? (
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
             <Text as="p">Store connected successfully.</Text>
           </div>
-
         ) : (
+
           <Form method="post">
             <s-section>
               <s-text-field
