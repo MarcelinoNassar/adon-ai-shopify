@@ -34,7 +34,7 @@ model Session {
 model Store {
   id              String   @id @default(auto()) @map("_id") @db.ObjectId
   name            String
-  shopDomain      String?  @unique
+  shopDomain      String?
   accessToken     String?
   backgroundColor String?
   currencyCode    String?

@@ -12,7 +12,7 @@ type ActionData =
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
 
-  const store = await prisma.store.findUnique({
+  const store = await prisma.store.findFirst({
     where: { shopDomain: session.shop },
   });
 
@@ -93,7 +93,7 @@ export default function Index() {
 
         {isConnected ? (
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <Text as="p">Store connected successfully.</Text>
+            <Text as="p">Store connected successfully to Adknot-ai.</Text>
           </div>
         ) : (
 
