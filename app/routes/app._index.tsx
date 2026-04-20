@@ -91,6 +91,10 @@ export default function Index() {
     <div style={{ minHeight: "90vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
       <div style={{ width: 900 }}>
 
+        <div style={{ display: "flex", justifyContent: "center", marginTop:-300}}>
+          <img src="/adknot-image.png" alt="Adknot" style={{ maxWidth: 350, width: "100%", height: "auto" }}/>
+        </div>
+
         {isConnected ? (
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
             <Text as="p">Store connected successfully to Adknot-ai.</Text>
