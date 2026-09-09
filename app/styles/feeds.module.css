@@ -392,6 +392,37 @@
   outline-offset: 2px;
 }
 
+.feedFileDetails {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 0;
+  margin-top: 5px;
+  color: #616161;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.feedFileDetail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.feedFileDetail svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  color: #4a4a4a;
+}
+
+.feedFileDetail + .feedFileDetail {
+  padding-left: 12px;
+  margin-left: 12px;
+  border-left: 1px solid #d1d1d1;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;

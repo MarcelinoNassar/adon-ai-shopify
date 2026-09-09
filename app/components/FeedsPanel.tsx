@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { GoPackage } from "react-icons/go";
+import { TbFileTypeXml } from "react-icons/tb";
 
 import type {
   AdditionalFeedActionResponse,
@@ -98,6 +100,21 @@ function formatFileSize(value: string | null) {
   return `${new Intl.NumberFormat(undefined, {
     maximumFractionDigits: 1,
   }).format(whole)} ${units[unitIndex]}`;
+}
+
+function FeedFileDetails({ feed }: { feed: FeedMetadata }) {
+  return (
+    <span className={styles.feedFileDetails}>
+      <span className={styles.feedFileDetail}>
+        <GoPackage aria-hidden="true" />
+        {new Intl.NumberFormat().format(feed.generatedItems)} variants
+      </span>
+      <span className={styles.feedFileDetail}>
+        <TbFileTypeXml aria-hidden="true" />
+        {formatFileSize(feed.fileSizeBytes) ?? "Size unavailable"}
+      </span>
+    </span>
+  );
 }
 
 function formatRefreshDate(value: string, locale: string | null) {
@@ -1234,15 +1251,18 @@ export function FeedsPanel({ active, scope }: FeedsPanelProps) {
                   </s-table-cell>
                   <s-table-cell>
                     {successfulFeed && feed ? (
-                      <a
-                        className={styles.feedUrl}
-                        href={feed.publicUrl}
-                        rel="noreferrer"
-                        target="_blank"
-                        title={feed.publicUrl}
-                      >
-                        {feed.publicUrl}
-                      </a>
+                      <>
+                        <a
+                          className={styles.feedUrl}
+                          href={feed.publicUrl}
+                          rel="noreferrer"
+                          target="_blank"
+                          title={feed.publicUrl}
+                        >
+                          {feed.publicUrl}
+                        </a>
+                        <FeedFileDetails feed={feed} />
+                      </>
                     ) : (
                       <span className={styles.secondaryText}>
                         Available after generation
@@ -1257,10 +1277,6 @@ export function FeedsPanel({ active, scope }: FeedsPanelProps) {
                             feed.lastRefreshedAt,
                             scope?.locale ?? null,
                           )}
-                        </span>
-                        <span className={styles.secondaryText}>
-                          {formatFileSize(feed.fileSizeBytes) ??
-                            "Size unavailable"}
                         </span>
                       </>
                     ) : (
@@ -1495,15 +1511,18 @@ export function FeedsPanel({ active, scope }: FeedsPanelProps) {
                       </s-table-cell>
                       <s-table-cell>
                         {candidateReady ? (
-                          <a
-                            className={styles.feedUrl}
-                            href={candidate.publicUrl}
-                            rel="noreferrer"
-                            target="_blank"
-                            title={candidate.publicUrl}
-                          >
-                            {candidate.publicUrl}
-                          </a>
+                          <>
+                            <a
+                              className={styles.feedUrl}
+                              href={candidate.publicUrl}
+                              rel="noreferrer"
+                              target="_blank"
+                              title={candidate.publicUrl}
+                            >
+                              {candidate.publicUrl}
+                            </a>
+                            <FeedFileDetails feed={candidate} />
+                          </>
                         ) : (
                           <span className={styles.secondaryText}>
                             Available after generation
@@ -1518,10 +1537,6 @@ export function FeedsPanel({ active, scope }: FeedsPanelProps) {
                                 candidate.lastRefreshedAt,
                                 scope?.locale ?? null,
                               )}
-                            </span>
-                            <span className={styles.secondaryText}>
-                              {formatFileSize(candidate.fileSizeBytes) ??
-                                "Size unavailable"}
                             </span>
                           </>
                         ) : (
